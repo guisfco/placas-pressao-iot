@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Início</title>
+</head>
+<script>
+    function consultar() {
+        var pacienteValue = document.getElementById('paciente').value;
+        if (!isNaN(pacienteValue) && pacienteValue.trim() !== '') {
+            var url = '/' + encodeURIComponent(pacienteValue);
+            window.location.href = url;
+        } else {
+            alert('Por favor insira um valor numérico válido.');
+        }
+    }
+</script>
+
+<body>
+
+    <label for="paciente">Paciente:</label>
+    <input type="number" id="paciente" name="paciente" min="0" maxlength="14">
+
+    <button onclick="consultar()">Consultar</button>
+</body>
+
+</html>

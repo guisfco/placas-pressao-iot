@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Consulta Paciente</title>
+</head>
+<script>
+    function novaMedicao() {
+        window.location.href = window.location.href + '/medicao';
+    }
+</script>
+
+<body>
+    <h2>Paciente: {{ paciente }}</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data/Hora</th>
+                <th>Sensor 1</th>
+                <th>Sensor 2</th>
+                <th>Sensor 3</th>
+                <th>Sensor 4</th>
+                <th>Sensor 5</th>
+                <th>Sensor 6</th>
+                <th>Sensor 7</th>
+                <th>Sensor 8</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for medicao in medicoes %}
+            <tr>
+                <td>{{ medicao.id }}</td>
+                <td>{{ medicao.timestamp }}</td>
+                <td>{{ medicao.sensor1 }}</td>
+                <td>{{ medicao.sensor2 }}</td>
+                <td>{{ medicao.sensor3 }}</td>
+                <td>{{ medicao.sensor4 }}</td>
+                <td>{{ medicao.sensor5 }}</td>
+                <td>{{ medicao.sensor6 }}</td>
+                <td>{{ medicao.sensor7 }}</td>
+                <td>{{ medicao.sensor8 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button onclick="novaMedicao()">Nova medição</button>
+    <button onclick="window.location = '/'">Voltar</button>
+</body>
+
+</html>
