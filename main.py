@@ -49,7 +49,7 @@ def save(paciente=None):
     try:
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO medicoes (paciente, timestamp, sensor_1, sensor_2, sensor_3, sensor_4, sensor_5, sensor_6, sensor_7, sensor_8) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (paciente, datetime.datetime.now(), sensor_1, sensor_2, sensor_3, sensor_4, sensor_5, sensor_6, sensor_7, sensor_8))
+        cursor.execute('INSERT INTO medicoes (paciente, timestamp, sensor_1, sensor_2, sensor_3, sensor_4, sensor_5, sensor_6, sensor_7, sensor_8) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (paciente, datetime.datetime.now().strftime("%d-%m-%Y %H:%M"), sensor_1, sensor_2, sensor_3, sensor_4, sensor_5, sensor_6, sensor_7, sensor_8))
         conn.commit()
         conn.close()
 
