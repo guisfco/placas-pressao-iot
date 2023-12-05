@@ -1,6 +1,10 @@
 # placas-pressao-iot
 Trabalho final para a disciplina de Internet das Coisas - Unisinos 2023
 
+## Pré-requisitos
+- Python: https://www.python.org/downloads/
+- Docker (opcional): https://docs.docker.com/get-docker/
+
 ## Execução
 ### Para executar com Docker
 ```shell
