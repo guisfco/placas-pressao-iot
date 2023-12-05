@@ -36,7 +36,7 @@ def create_table():
 create_table()
 
 @app.route('/api/<paciente>', methods=['POST'])
-def save(paciente=None):
+def salvar_medicao(paciente=None):
     sensor_1 = request.json['sensor1']
     sensor_2 = request.json['sensor2']
     sensor_3 = request.json['sensor3']
@@ -53,11 +53,27 @@ def save(paciente=None):
         conn.commit()
         conn.close()
 
-        response = {'status': 'success', 'message': 'Data saved successfully'}
+        response = {'mensagem': 'Medição inserida com sucesso!'}
         return jsonify(response)
 
     except Exception as e:
-        response = {'status': 'error', 'message': str(e)}
+        response = {'mensagem': str(e)}
+        return jsonify(response), 500
+
+@app.route('/api/<paciente>/<medicao>', methods=['DELETE'])
+def deletar_medicao(paciente=None, medicao=None):
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM medicoes WHERE paciente = ? AND id = ?', (paciente, medicao,))
+        conn.commit()
+        conn.close()
+
+        response = {'mensagem': 'Medição deletada com sucesso!'}
+        return jsonify(response)
+
+    except Exception as e:
+        response = {'mensagem': str(e)}
         return jsonify(response), 500
 
 def obter_medicoes(paciente=None):
