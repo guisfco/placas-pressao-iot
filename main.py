@@ -17,6 +17,9 @@ mqtt = Mqtt(app)
 
 DB_NAME = 'data.db'
 
+TOKEN_D = 'D'
+TOKEN_E = 'E'
+
 SENSORES_D_ATUAL = 0.0
 SENSORES_E_ATUAL = 0.0
 
@@ -33,6 +36,10 @@ def calcular_predominante(d, e):
         return 'Esquerdo'
     else:
         return '-'
+
+def obter_valor_token(arr, token):
+    pos = arr.index(token)
+    return float(arr[pos + 1])
 
 def criar_tabela():
     conn = sqlite3.connect(DB_NAME)
@@ -68,8 +75,8 @@ def handle_mqtt_message(client, userdata, message):
 
     global SENSORES_D_ATUAL, SENSORES_E_ATUAL
 
-    SENSORES_D_ATUAL = float(dados[1])
-    SENSORES_E_ATUAL = float(dados[3])
+    SENSORES_E_ATUAL = obter_valor_token(arr=dados, token=TOKEN_E)
+    SENSORES_D_ATUAL = obter_valor_token(arr=dados, token=TOKEN_D)
 
 @app.route('/api/<paciente>/', methods=['POST'])
 def salvar_medicao(paciente=None):
