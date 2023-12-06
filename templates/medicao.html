@@ -38,6 +38,35 @@
           alert("Falha ao salvar medição. Por favor tente novamente.");
         });
     }
+
+    function atualizarDados() {
+      fetch("/api/sensores/")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Não foi possível obter os dados atualizados: ${response.status}`);
+          }
+
+          return response.json();
+        })
+        .then((data) => {
+          const {sensoresE, sensoresD, diferenca, predominante} = data;
+
+          const elementoSensoresE = document.getElementById("sensoresE");
+          const elementoSensoresD = document.getElementById("sensoresD");
+          const elementoDiferenca = document.getElementById("diferenca");
+          const elementoPredominante = document.getElementById("predominante");
+
+          elementoSensoresE.innerText = sensoresE;
+          elementoSensoresD.innerText = sensoresD;
+          elementoDiferenca.innerText = diferenca;
+          elementoPredominante.innerText = predominante;
+        })
+        .catch((error) => {
+          console.error("Erro ao chamar o serviço: ", error);
+        });
+    }
+
+    setInterval(atualizarDados, 5000);
   </script>
 
   <body>
@@ -79,7 +108,7 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Diferença (kg)</h5>
-                <h1>{{ dados.diferenca }}</h1>
+                <h1 id="diferenca">{{ dados.diferenca }}</h1>
               </div>
             </div>
           </div>
@@ -88,7 +117,7 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Predominante</h5>
-                <h1>{{ dados.predominante }}</h1>
+                <h1 id="predominante">{{ dados.predominante }}</h1>
               </div>
             </div>
           </div>

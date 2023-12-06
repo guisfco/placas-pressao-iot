@@ -113,6 +113,17 @@ def deletar_medicao(paciente=None, medicao=None):
         response = {'mensagem': str(e)}
         return jsonify(response), 500
 
+@app.route('/api/sensores/', methods=['GET'])
+def medicao_atual():
+    response = {
+        'sensoresD': SENSORES_D_ATUAL,
+        'sensoresE': SENSORES_E_ATUAL,
+        'diferenca': calcular_diferenca_sensores(SENSORES_D_ATUAL, SENSORES_E_ATUAL),
+        'predominante': calcular_predominante(d=SENSORES_D_ATUAL, e=SENSORES_E_ATUAL)
+    }
+
+    return jsonify(response), 200
+
 def obter_medicoes(paciente=None):
     try:
         conn = sqlite3.connect(DB_NAME)
