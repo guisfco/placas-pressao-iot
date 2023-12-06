@@ -1,51 +1,107 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>Nova medição</title>
-</head>
-<script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+  </head>
+  <script>
     function getPaciente() {
-        var pathArray = window.location.pathname.split('/');
-        return pathArray[pathArray.length - 2];
+      var pathArray = window.location.pathname.split("/");
+      return pathArray[pathArray.length - 2];
     }
 
     function salvar() {
-        var sensorData = {
-            sensoresD: document.getElementById('sensoresD').innerText,
-            sensoresE: document.getElementById('sensoresE').innerText,
-        };
+      var sensorData = {
+        sensoresD: document.getElementById("sensoresD").innerText,
+        sensoresE: document.getElementById("sensoresE").innerText,
+      };
 
-        fetch('/api/' + getPaciente(), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(sensorData),
+      fetch("/api/" + getPaciente(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sensorData),
+      })
+        .then((data) => {
+          alert("Medição salva com sucesso!");
+          window.location = document.referrer;
         })
-        .then(data => {
-            alert('Medição salva com sucesso!');
-            window.location = document.referrer;
-        })
-        .catch(error => {
-            console.error('Erro inesperado:', error);
-            alert('Falha ao salvar medição. Por favor tente novamente.');
+        .catch((error) => {
+          console.error("Erro inesperado:", error);
+          alert("Falha ao salvar medição. Por favor tente novamente.");
         });
     }
-</script>
+  </script>
 
-<body>
-    <h2>Sensores</h2>
+  <body>
+    <div class="container grid mt-4 p-4">
+      <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Início</a></li>
+          <li class="breadcrumb-item"><a href=".">Consulta</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Nova medição
+          </li>
+        </ol>
+      </nav>
+      <div>
+        <h2>Sensores</h2>
 
-    <ol>
-        <li id="sensoresD">{{ dados.sensoresD }}</li>
-        <li id="sensoresE">{{ dados.sensoresE }}</li>
-        <li>{{ dados.diferenca }}</li>
-        <li>{{ dados.predominante }}</li>
-    </ol>
+        <div class="row mb-4 mt-4">
+          <div class="col-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Pé esquerdo</h5>
+                <h1>{{ dados.sensoresE }}</h1>
+              </div>
+            </div>
+          </div>
 
-    <button onclick="salvar()">Salvar</button>
-    <button onclick="history.back()">Voltar</button>
-</body>
+          <div class="col-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Pé direito</h5>
+                <h1>{{ dados.sensoresD }}</h1>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div class="row mb-4">
+          <div class="col-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Diferença</h5>
+                <h1>{{ dados.diferenca }}</h1>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Predominante</h5>
+                <h1>{{ dados.predominante }}</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="salvar()">Salvar</button>
+        <button class="btn btn-secondary" onclick="history.back()">
+          Voltar
+        </button>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
