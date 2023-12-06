@@ -71,7 +71,7 @@ def handle_mqtt_message(client, userdata, message):
     SENSORES_D_ATUAL = float(dados[1])
     SENSORES_E_ATUAL = float(dados[3])
 
-@app.route('/api/<paciente>', methods=['POST'])
+@app.route('/api/<paciente>/', methods=['POST'])
 def salvar_medicao(paciente=None):
     sensores_d = request.json['sensoresD']
     sensores_e = request.json['sensoresE']
@@ -90,7 +90,7 @@ def salvar_medicao(paciente=None):
         response = {'mensagem': str(e)}
         return jsonify(response), 500
 
-@app.route('/api/<paciente>/<medicao>', methods=['DELETE'])
+@app.route('/api/<paciente>/<medicao>/', methods=['DELETE'])
 def deletar_medicao(paciente=None, medicao=None):
     try:
         conn = sqlite3.connect(DB_NAME)
@@ -137,11 +137,11 @@ def obter_medicoes(paciente=None):
 def index():
     return render_template("index.html")
 
-@app.route('/<paciente>')
+@app.route('/<paciente>/')
 def consulta(paciente=None):
     return render_template("consulta.html", paciente=paciente, medicoes=obter_medicoes(paciente))
 
-@app.route('/<paciente>/medicao')
+@app.route('/<paciente>/medicao/')
 def medicao(paciente=None):
     dados = {
         'sensoresD': SENSORES_D_ATUAL,

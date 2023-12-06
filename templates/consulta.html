@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Consulta Paciente</title>
+    <title>Consulta</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <script>
     function novaMedicao() {
-        window.location.href = window.location.href + '/medicao';
+        window.location.href = window.location.href + '/medicao/';
     }
 
     function deletarMedicao(medicao, paciente) {
-        fetch(`/api/${paciente}/${medicao}`, {
+        fetch(`/api/${paciente}/${medicao}/`, {
             method: 'DELETE',
         })
         .then(data => {
@@ -40,22 +41,20 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Data/hora</th>
-                        <th>Lado direito (kg)</th>
-                        <th>Lado esquerdo (kg)</th>
+                        <th>Pé esquerdo (kg)</th>
+                        <th>Pé direito (kg)</th>
                         <th>Diferença (kg)</th>
-                        <th>Lado predominante</th>
+                        <th>Predominante</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for medicao in medicoes %}
                     <tr class="align-middle">
-                        <td>{{ medicao.id }}</td>
                         <td>{{ medicao.timestamp }}</td>
-                        <td>{{ medicao.sensoresD }}</td>
                         <td>{{ medicao.sensoresE }}</td>
+                        <td>{{ medicao.sensoresD }}</td>
                         <td>{{ medicao.diferenca }}</td>
                         <td>{{ medicao.predominante }}</td>
                         <td>

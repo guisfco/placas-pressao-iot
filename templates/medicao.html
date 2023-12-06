@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Nova medição</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,7 +13,7 @@
   <script>
     function getPaciente() {
       var pathArray = window.location.pathname.split("/");
-      return pathArray[pathArray.length - 2];
+      return pathArray[1];
     }
 
     function salvar() {
@@ -21,7 +22,7 @@
         sensoresE: document.getElementById("sensoresE").innerText,
       };
 
-      fetch("/api/" + getPaciente(), {
+      fetch(`/api/${getPaciente()}/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,21 +45,21 @@
       <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/">Início</a></li>
-          <li class="breadcrumb-item"><a href=".">Consulta</a></li>
+          <li class="breadcrumb-item"><a href="..">Consulta</a></li>
           <li class="breadcrumb-item active" aria-current="page">
             Nova medição
           </li>
         </ol>
       </nav>
       <div>
-        <h2>Sensores</h2>
+        <h1>Dados da medição</h101>
 
         <div class="row mb-4 mt-4">
           <div class="col-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Pé esquerdo</h5>
-                <h1>{{ dados.sensoresE }}</h1>
+                <h5 class="card-title">Pé esquerdo (kg)</h5>
+                <h1 id="sensoresE">{{ dados.sensoresE }}</h1>
               </div>
             </div>
           </div>
@@ -66,8 +67,8 @@
           <div class="col-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Pé direito</h5>
-                <h1>{{ dados.sensoresD }}</h1>
+                <h5 class="card-title">Pé direito (kg)</h5>
+                <h1 id="sensoresD">{{ dados.sensoresD }}</h1>
               </div>
             </div>
           </div>
@@ -77,7 +78,7 @@
           <div class="col-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Diferença</h5>
+                <h5 class="card-title">Diferença (kg)</h5>
                 <h1>{{ dados.diferenca }}</h1>
               </div>
             </div>
@@ -92,10 +93,7 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary" onclick="salvar()">Salvar</button>
-        <button class="btn btn-secondary" onclick="history.back()">
-          Voltar
-        </button>
+        <button class="btn btn-outline-secondary btn-lg" onclick="salvar()">Salvar</button>
       </div>
     </div>
     <script
