@@ -1,17 +1,24 @@
 from flask import Flask, render_template, jsonify, request
-import paho.mqtt.publish as publish
+from flask_mqtt import Mqtt
+import threading
 import sqlite3
 import datetime
 
 app = Flask(__name__)
 
-mqtt_broker = "broker.example.com" # todo: alterar para o broker correto
-mqtt_port = 1883
+app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_KEEPALIVE'] = 5
+app.config['MQTT_TLS_ENABLED'] = False
+
+TOPICO_MEDICOES = 'IOT/MEDE_CARGA'
+
+mqtt = Mqtt(app)
 
 DB_NAME = 'data.db'
 
-SENSORES_D_ATUAL = 51.0 # todo: popular com valores recebidos do tópico
-SENSORES_E_ATUAL = 50.9 # todo: popular com valores recebidos do tópico
+SENSORES_D_ATUAL = 0.0
+SENSORES_E_ATUAL = 0.0
 
 def calcular_diferenca_sensores(d, e):
     return round(abs(float(d) - float(e)), 3)
@@ -45,6 +52,24 @@ def criar_tabela():
     conn.close()
 
 criar_tabela()
+
+@mqtt.on_connect()
+def handle_connect(client, userdata, flags, rc):
+    mqtt.subscribe(TOPICO_MEDICOES)
+
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, message):
+    msg = dict(
+        topic=message.topic,
+        payload=message.payload.decode()
+    )
+    
+    dados = msg['payload'].split(';')
+
+    global SENSORES_D_ATUAL, SENSORES_E_ATUAL
+
+    SENSORES_D_ATUAL = float(dados[1])
+    SENSORES_E_ATUAL = float(dados[3])
 
 @app.route('/api/<paciente>', methods=['POST'])
 def salvar_medicao(paciente=None):
