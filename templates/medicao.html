@@ -12,14 +12,8 @@
 
     function salvar() {
         var sensorData = {
-            sensor1: document.getElementById('sensor1').innerText,
-            sensor2: document.getElementById('sensor2').innerText,
-            sensor3: document.getElementById('sensor3').innerText,
-            sensor4: document.getElementById('sensor4').innerText,
-            sensor5: document.getElementById('sensor5').innerText,
-            sensor6: document.getElementById('sensor6').innerText,
-            sensor7: document.getElementById('sensor7').innerText,
-            sensor8: document.getElementById('sensor8').innerText,
+            sensoresD: document.getElementById('sensoresD').innerText,
+            sensoresE: document.getElementById('sensoresE').innerText,
         };
 
         fetch('/api/' + getPaciente(), {
@@ -44,14 +38,10 @@
     <h2>Sensores</h2>
 
     <ol>
-        <li id="sensor1">{{ sensores.sensor1 }}</li>
-        <li id="sensor2">{{ sensores.sensor2 }}</li>
-        <li id="sensor3">{{ sensores.sensor3 }}</li>
-        <li id="sensor4">{{ sensores.sensor4 }}</li>
-        <li id="sensor5">{{ sensores.sensor5 }}</li>
-        <li id="sensor6">{{ sensores.sensor6 }}</li>
-        <li id="sensor7">{{ sensores.sensor7 }}</li>
-        <li id="sensor8">{{ sensores.sensor8 }}</li>
+        <li id="sensoresD">{{ dados.sensoresD }}</li>
+        <li id="sensoresE">{{ dados.sensoresE }}</li>
+        <li>{{ dados.diferenca }}</li>
+        <li>{{ dados.predominante }}</li>
     </ol>
 
     <button onclick="salvar()">Salvar</button>

@@ -41,15 +41,11 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Data/Hora</th>
-                        <th>Sensor 1</th>
-                        <th>Sensor 2</th>
-                        <th>Sensor 3</th>
-                        <th>Sensor 4</th>
-                        <th>Sensor 5</th>
-                        <th>Sensor 6</th>
-                        <th>Sensor 7</th>
-                        <th>Sensor 8</th>
+                        <th>Data/hora</th>
+                        <th>Lado direito (kg)</th>
+                        <th>Lado esquerdo (kg)</th>
+                        <th>Diferença (kg)</th>
+                        <th>Lado predominante</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -58,14 +54,10 @@
                     <tr class="align-middle">
                         <td>{{ medicao.id }}</td>
                         <td>{{ medicao.timestamp }}</td>
-                        <td>{{ medicao.sensor1 }}</td>
-                        <td>{{ medicao.sensor2 }}</td>
-                        <td>{{ medicao.sensor3 }}</td>
-                        <td>{{ medicao.sensor4 }}</td>
-                        <td>{{ medicao.sensor5 }}</td>
-                        <td>{{ medicao.sensor6 }}</td>
-                        <td>{{ medicao.sensor7 }}</td>
-                        <td>{{ medicao.sensor8 }}</td>
+                        <td>{{ medicao.sensoresD }}</td>
+                        <td>{{ medicao.sensoresE }}</td>
+                        <td>{{ medicao.diferenca }}</td>
+                        <td>{{ medicao.predominante }}</td>
                         <td>
                             <button onclick="deletarMedicao(this.id, '{{ paciente }}')" type="button" class="btn btn-outline-danger btn-sm" id="{{ medicao.id }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">

@@ -5,12 +5,29 @@ import datetime
 
 app = Flask(__name__)
 
-mqtt_broker = "broker.example.com"
+mqtt_broker = "broker.example.com" # todo: alterar para o broker correto
 mqtt_port = 1883
 
 DB_NAME = 'data.db'
 
-def create_table():
+SENSORES_D_ATUAL = 51.0 # todo: popular com valores recebidos do tópico
+SENSORES_E_ATUAL = 50.9 # todo: popular com valores recebidos do tópico
+
+def calcular_diferenca_sensores(d, e):
+    return round(abs(float(d) - float(e)), 3)
+
+def calcular_predominante(d, e):
+    d = float(d)
+    e = float(e)
+
+    if d > e:
+        return 'Direito'
+    elif e > d:
+        return 'Esquerdo'
+    else:
+        return '-'
+
+def criar_tabela():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
@@ -19,37 +36,25 @@ def create_table():
             id INTEGER PRIMARY KEY,
             paciente TEXT NOT NULL,
             timestamp DATETIME NOT NULL,
-            sensor_1 DECIMAL NOT NULL,
-            sensor_2 DECIMAL NOT NULL,
-            sensor_3 DECIMAL NOT NULL,
-            sensor_4 DECIMAL NOT NULL,
-            sensor_5 DECIMAL NOT NULL,
-            sensor_6 DECIMAL NOT NULL,
-            sensor_7 DECIMAL NOT NULL,
-            sensor_8 DECIMAL NOT NULL
+            sensores_d DECIMAL(6,3) NOT NULL,
+            sensores_e DECIMAL(6,3) NOT NULL
         )
     ''')
 
     conn.commit()
     conn.close()
 
-create_table()
+criar_tabela()
 
 @app.route('/api/<paciente>', methods=['POST'])
 def salvar_medicao(paciente=None):
-    sensor_1 = request.json['sensor1']
-    sensor_2 = request.json['sensor2']
-    sensor_3 = request.json['sensor3']
-    sensor_4 = request.json['sensor4']
-    sensor_5 = request.json['sensor5']
-    sensor_6 = request.json['sensor6']
-    sensor_7 = request.json['sensor7']
-    sensor_8 = request.json['sensor8']
+    sensores_d = request.json['sensoresD']
+    sensores_e = request.json['sensoresE']
 
     try:
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO medicoes (paciente, timestamp, sensor_1, sensor_2, sensor_3, sensor_4, sensor_5, sensor_6, sensor_7, sensor_8) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (paciente, datetime.datetime.now().strftime("%d-%m-%Y %H:%M"), sensor_1, sensor_2, sensor_3, sensor_4, sensor_5, sensor_6, sensor_7, sensor_8))
+        cursor.execute('INSERT INTO medicoes (paciente, timestamp, sensores_d, sensores_e) VALUES (?, ?, ?, ?)', (paciente, datetime.datetime.now().strftime("%d-%m-%Y %H:%M"), sensores_d, sensores_e))
         conn.commit()
         conn.close()
 
@@ -92,14 +97,10 @@ def obter_medicoes(paciente=None):
                     'id': row[0], 
                     'paciente': row[1], 
                     'timestamp': row[2], 
-                    'sensor1': row[3], 
-                    'sensor2': row[4], 
-                    'sensor3': row[5], 
-                    'sensor4': row[6], 
-                    'sensor5': row[7], 
-                    'sensor6': row[8], 
-                    'sensor7': row[9], 
-                    'sensor8': row[10]
+                    'sensoresD': row[3], 
+                    'sensoresE': row[4], 
+                    'diferenca': calcular_diferenca_sensores(row[3], row[4]), 
+                    'predominante': calcular_predominante(d=row[3], e=row[4])
                 }
             )
 
@@ -117,18 +118,14 @@ def consulta(paciente=None):
 
 @app.route('/<paciente>/medicao')
 def medicao(paciente=None):
-    sensores = {
-        'sensor1': 0.0,
-        'sensor2': 0.0,
-        'sensor3': 0.0,
-        'sensor4': 0.0,
-        'sensor5': 0.0,
-        'sensor6': 0.0,
-        'sensor7': 0.0,
-        'sensor8': 0.0
+    dados = {
+        'sensoresD': SENSORES_D_ATUAL,
+        'sensoresE': SENSORES_E_ATUAL,
+        'diferenca': calcular_diferenca_sensores(SENSORES_D_ATUAL, SENSORES_E_ATUAL),
+        'predominante': calcular_predominante(d=SENSORES_D_ATUAL, e=SENSORES_E_ATUAL)
     }
 
-    return render_template("medicao.html", sensores=sensores)
+    return render_template("medicao.html", dados=dados)
 
 if __name__ == '__main__':
     app.run(debug=True)
