@@ -1,87 +1,97 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Nova medição</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
-  </head>
-  <script>
-    function getPaciente() {
-      var pathArray = window.location.pathname.split("/");
-      return pathArray[1];
-    }
 
-    function salvar() {
-      var sensorData = {
-        sensoresD: document.getElementById("sensoresD").innerText,
-        sensoresE: document.getElementById("sensoresE").innerText,
-      };
+<head>
+  <title>Nova medição</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+</head>
+<script>
+  const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div')
+    wrapper.innerHTML = [
+      `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+      `   <div>${message}</div>`,
+      '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+      '</div>'
+    ].join('')
 
-      fetch(`/api/${getPaciente()}/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(sensorData),
+    document.getElementById('liveAlertPlaceholder').append(wrapper)
+  }
+
+  function getPaciente() {
+    var pathArray = window.location.pathname.split("/");
+    return pathArray[1];
+  }
+
+  function salvar() {
+    var sensorData = {
+      sensoresD: document.getElementById("sensoresD").innerText,
+      sensoresE: document.getElementById("sensoresE").innerText,
+    };
+
+    fetch(`/api/${getPaciente()}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(sensorData),
+    })
+      .then((data) => {
+        appendAlert('Medição salva com sucesso!', 'success')
+        document.getElementById('botaoSalvar').disabled = true;
+
+        setInterval(() => window.location = document.referrer, 2000);
       })
-        .then((data) => {
-          alert("Medição salva com sucesso!");
-          window.location = document.referrer;
-        })
-        .catch((error) => {
-          console.error("Erro inesperado:", error);
-          alert("Falha ao salvar medição. Por favor tente novamente.");
-        });
-    }
+      .catch((error) => {
+        console.error("Erro inesperado:", error);
+      });
+  }
 
-    function atualizarDados() {
-      fetch("/api/sensores/")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Não foi possível obter os dados atualizados: ${response.status}`);
-          }
+  function atualizarDados() {
+    fetch("/api/sensores/")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Não foi possível obter os dados atualizados: ${response.status}`);
+        }
 
-          return response.json();
-        })
-        .then((data) => {
-          const {sensoresE, sensoresD, diferenca, predominante} = data;
+        return response.json();
+      })
+      .then((data) => {
+        const { sensoresE, sensoresD, diferenca, predominante } = data;
 
-          const elementoSensoresE = document.getElementById("sensoresE");
-          const elementoSensoresD = document.getElementById("sensoresD");
-          const elementoDiferenca = document.getElementById("diferenca");
-          const elementoPredominante = document.getElementById("predominante");
+        const elementoSensoresE = document.getElementById("sensoresE");
+        const elementoSensoresD = document.getElementById("sensoresD");
+        const elementoDiferenca = document.getElementById("diferenca");
+        const elementoPredominante = document.getElementById("predominante");
 
-          elementoSensoresE.innerText = sensoresE;
-          elementoSensoresD.innerText = sensoresD;
-          elementoDiferenca.innerText = diferenca;
-          elementoPredominante.innerText = predominante;
-        })
-        .catch((error) => {
-          console.error("Erro ao chamar o serviço: ", error);
-        });
-    }
+        elementoSensoresE.innerText = sensoresE;
+        elementoSensoresD.innerText = sensoresD;
+        elementoDiferenca.innerText = diferenca;
+        elementoPredominante.innerText = predominante;
+      })
+      .catch((error) => {
+        console.error("Erro ao chamar o serviço: ", error);
+      });
+  }
 
-    setInterval(atualizarDados, 5000);
-  </script>
+  setInterval(atualizarDados, 5000);
+</script>
 
-  <body>
-    <div class="container grid mt-4 p-4">
-      <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Início</a></li>
-          <li class="breadcrumb-item"><a href="..">Consulta</a></li>
-          <li class="breadcrumb-item active" aria-current="page">
-            Nova medição
-          </li>
-        </ol>
-      </nav>
-      <div>
-        <h1>Dados da medição</h101>
+<body>
+  <div class="container grid mt-4 p-4">
+    <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Início</a></li>
+        <li class="breadcrumb-item"><a href="..">Consulta</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Nova medição
+        </li>
+      </ol>
+    </nav>
+    <div class="mb-4">
+      <h1>Dados da medição</h101>
 
         <div class="row mb-4 mt-4">
           <div class="col-6">
@@ -123,12 +133,12 @@
           </div>
         </div>
         <button class="btn btn-outline-secondary btn-lg" onclick="salvar()">Salvar</button>
-      </div>
     </div>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    <div id="liveAlertPlaceholder"></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>

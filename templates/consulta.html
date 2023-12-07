@@ -16,12 +16,10 @@
             method: 'DELETE',
         })
         .then(data => {
-            alert('Medição deletada com sucesso!');
             window.location.reload();
         })
         .catch(error => {
             console.error('Erro inesperado:', error);
-            alert('Falha ao deletar medição. Por favor tente novamente.');
         });
     }
 </script>
