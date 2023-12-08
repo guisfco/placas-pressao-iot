@@ -39,8 +39,7 @@
       body: JSON.stringify(sensorData),
     })
       .then((data) => {
-        appendAlert('Medição salva com sucesso!', 'success')
-        document.getElementById('botaoSalvar').disabled = true;
+        appendAlert('Medição salva com sucesso!', 'success');
 
         setInterval(() => window.location = document.referrer, 2000);
       })
